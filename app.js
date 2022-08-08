@@ -1,4 +1,5 @@
-const grid = $('.grid');
+var grid = $('.grid');
+console.log(grid);
 var scoreDisplay = $('#score');
 
 
@@ -40,6 +41,7 @@ const layout = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 ]
 
+const squares = [];
 // Legend
 //0: Pac dot
 //1: Wall
@@ -48,10 +50,62 @@ const layout = [
 //4: Empty Space
 
 //Render Grid
-function renderGrid(layout) {
+function renderGrid() {
     layout.forEach(l => {
-        const square = $('div');
-        grid.append(square);
+        const square = $("<div></div>");
+        square.appendTo(grid);
+        squares.push(square);
+
+        //add layout the the board
+        if (l === 0) {
+            square.addClass('pac-dot');
+        } else if (l === 1) {
+            square.addClass('wall');
+        } else if (l === 3) {
+            square.addClass('power-pellet');
+        }
     });
 }
-renderGrid(layout);
+renderGrid();
+
+//Pac-man starting position
+let pacmanCurrentIndex = 490;
+
+squares[pacmanCurrentIndex].addClass('pac-man');
+
+//move pac-man
+function movePacman(e) {
+
+    squares[pacmanCurrentIndex].removeClass('pac-man');
+
+    switch (e.keyCode) {
+        case 38:
+            if (pacmanCurrentIndex - width >= 0 && !squares[pacmanCurrentIndex - width].hasClass('wall')) {
+                pacmanCurrentIndex -= width;
+            };
+            break;
+        case 40:
+            if (pacmanCurrentIndex + width < width * width && !squares[pacmanCurrentIndex + width].hasClass('wall')) {
+                pacmanCurrentIndex += width;
+            };
+            break;
+        case 37:
+            if (pacmanCurrentIndex % width !== 0 && !squares[pacmanCurrentIndex - 1].hasClass('wall')) {
+                pacmanCurrentIndex -= 1;
+            };
+            break;
+        case 39:
+            if (pacmanCurrentIndex % width < width - 1 && !squares[pacmanCurrentIndex + 1].hasClass('wall')) {
+                pacmanCurrentIndex += 1;
+            };
+            break;
+
+    };
+    squares[pacmanCurrentIndex].addClass('pac-man');
+    //pacDotEaten()
+    //powerPelletEaten()
+    //checkForWin
+
+}
+
+$(document).keyup(movePacman);

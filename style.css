@@ -2,11 +2,11 @@
     display: flex;
     flex-wrap: wrap;
     width: 560px;
-    height: 560;
+    height: 560px;
     border: solid black;
 }
 
-.grid section {
+.grid div {
     width: 20px;
     height: 20px;
 }
@@ -18,10 +18,15 @@
 }
 
 .wall {
-    background-color: black;
+    background-color: blue;
 }
 
 .power-pellet {
     background-color: green;
+    border-radius: 10px;
+}
+
+.pac-man {
+    background-color: yellow;
     border-radius: 10px;
 }
