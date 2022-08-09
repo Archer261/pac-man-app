@@ -63,6 +63,8 @@ function renderGrid() {
             square.addClass('wall');
         } else if (l === 3) {
             square.addClass('power-pellet');
+        } else if (l === 2) {
+            square.addClass('ghost-nest')
         }
     });
 }
@@ -79,24 +81,52 @@ function movePacman(e) {
     squares[pacmanCurrentIndex].removeClass('pac-man');
 
     switch (e.keyCode) {
+
+        //Up
         case 38:
-            if (pacmanCurrentIndex - width >= 0 && !squares[pacmanCurrentIndex - width].hasClass('wall')) {
+            if (pacmanCurrentIndex - width >= 0
+                && !squares[pacmanCurrentIndex - width].hasClass('wall')
+                && !squares[pacmanCurrentIndex - width].hasClass('ghost-nest')) {
                 pacmanCurrentIndex -= width;
+
             };
             break;
+
+        //Down
         case 40:
-            if (pacmanCurrentIndex + width < width * width && !squares[pacmanCurrentIndex + width].hasClass('wall')) {
+            if (pacmanCurrentIndex + width < width * width
+                && !squares[pacmanCurrentIndex + width].hasClass('wall')
+                && !squares[pacmanCurrentIndex + width].hasClass('ghost-nest')) {
                 pacmanCurrentIndex += width;
             };
             break;
+
+        //Left   
         case 37:
-            if (pacmanCurrentIndex % width !== 0 && !squares[pacmanCurrentIndex - 1].hasClass('wall')) {
+            if (pacmanCurrentIndex % width !== 0
+                && !squares[pacmanCurrentIndex - 1].hasClass('wall')
+                && !squares[pacmanCurrentIndex - 1].hasClass('ghost-nest')) {
                 pacmanCurrentIndex -= 1;
+
+                //check if pacman is in the left exit
+                if ((pacmanCurrentIndex - 1) === 363) {
+                    pacmanCurrentIndex = 391;
+                }
             };
             break;
+
+        //Right
         case 39:
-            if (pacmanCurrentIndex % width < width - 1 && !squares[pacmanCurrentIndex + 1].hasClass('wall')) {
+            if (pacmanCurrentIndex % width < width - 1
+                && !squares[pacmanCurrentIndex + 1].hasClass('wall')
+                && !squares[pacmanCurrentIndex + 1].hasClass('ghost-nest')) {
                 pacmanCurrentIndex += 1;
+
+                //check if pacman is in the right exit
+                if (((pacmanCurrentIndex + 1) === 392)) {
+                    pacmanCurrentIndex = 364;
+                }
+
             };
             break;
 
@@ -109,3 +139,4 @@ function movePacman(e) {
 }
 
 $(document).keyup(movePacman);
+$(document).keyup(() => console.log(pacmanCurrentIndex));
