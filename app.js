@@ -2,12 +2,8 @@ var grid = $('.grid');
 console.log(grid);
 var scoreDisplay = $('#score');
 
-
-//$(document).ready(() => {
-// grid.attr();
 scoreDisplay.text(0);
 const width = 28 //28 x28 = 784 square
-//})
 
 // Creates the grid
 const layout = [
