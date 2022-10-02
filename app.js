@@ -1,5 +1,5 @@
+const pp = $('#pp');
 var grid = $(".grid");
-console.log(grid);
 var scoreDisplay = $("#score");
 
 scoreDisplay.text(0);
@@ -75,6 +75,8 @@ let pacmanCurrentIndex = 490;
 
 squares[pacmanCurrentIndex].addClass("pac-man");
 
+
+
 //move pac-man
 function movePacman(e) {
     squares[pacmanCurrentIndex].removeClass("pac-man");
@@ -137,11 +139,11 @@ function movePacman(e) {
     squares[pacmanCurrentIndex].addClass("pac-man");
     pacDotEaten();
     powerPelletEaten();
-    //checkForWin
+    checkForGameOver();
+    checkForWin();
 }
 
 $(document).keyup(movePacman);
-$(document).keyup(() => console.log(pacmanCurrentIndex));
 
 function pacDotEaten() {
     if (squares[pacmanCurrentIndex].hasClass("pac-dot")) {
@@ -157,7 +159,7 @@ function powerPelletEaten() {
         score += 10
         ghosts.forEach(ghost => ghost.isScared = true)
         setTimeout(unScareGhosts, 10000);
-        squares[pacmanCurrentIndex].removeClass('pqwer-pellet')
+        squares[pacmanCurrentIndex].removeClass('power-pellet')
     }
 }
 
@@ -193,11 +195,15 @@ ghosts.forEach((ghost) => {
 });
 
 //move ghosts
-ghosts.forEach((ghost) => moveGhost(ghost));
+ghosts.forEach((ghost) => moveGhost(ghost, -1, +1, width, -width));
+
+function stopGhost(ghost) {
+    moveGhost(ghost, 0, 0, 0, 0)
+}
 
 //
-function moveGhost(ghost) {
-    const directions = [-1, +1, width, -width];
+function moveGhost(ghost, d1, d2, d3, d4) {
+    const directions = [d1, d2, d3, d4];
     let direction = directions[Math.floor(Math.random() * directions.length)];
 
     ghost.timerId = setInterval(function () {
@@ -223,6 +229,46 @@ function moveGhost(ghost) {
             score += 100;
             squares[ghost.currentIndex].addClass(`${ghost.className} ghost`)
         }
-
+        checkForGameOver()
     }, ghost.speed);
 }
+
+//check for game over
+function checkForGameOver() {
+    if (squares[pacmanCurrentIndex].hasClass('ghost') && !squares[pacmanCurrentIndex].hasClass('scared-ghost')) {
+        ghosts.forEach(ghost => clearInterval(ghost.timerId))
+        $(document).on('keyup', movePacman)
+        //Game Over alert
+        setTimeout(function () {
+            alert('Game Over!')
+        }, 500)
+    }
+}
+
+//check for win
+function checkForWin() {
+    if (score === 274) {
+        ghosts.forEach(ghost => clearInterval(ghost.timerId))
+        $(document).off('keyup', movePacman)
+        scoreDisplay.html("You Win!!");
+    }
+}
+
+
+// needs work
+// play/pause functionality
+function playPause() {
+    pp.on('click', function () {
+        if (pp[0].value === 'Pause') {
+            //stop ghosts
+            ghosts.forEach((ghost) => stopGhost(ghost));
+
+            pp[0].value = 'Play';
+        } else if (pp[0].value === 'Play') {
+            $(document).on('keyup', movePacman)
+            ghosts.forEach((ghost) => moveGhost(ghost, -1, +1, width, -width));
+            pp[0].value = 'Pause';
+        }
+    })
+}
+// playPause();
